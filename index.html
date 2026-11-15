@@ -22,6 +22,7 @@
   <button data-page="products"><span class="ico">▧</span>Каталог</button>
   <button data-page="clients"><span class="ico">♙</span>Клиенты</button>
   <button data-page="assistant"><span class="ico">✧</span>ИИ-продавец</button>
+  <button data-page="contacts"><span class="ico">↗</span>Контакты</button>
  </nav>
  <div class="sidefoot">Демо-версия · данные тестовые<br>Фугу CRM v0.1</div>
 </aside>
@@ -52,9 +53,20 @@
 <section class="section" id="products"><div class="panel"><div class="panelhead"><h2>Каталог товаров</h2><button class="btn primary" onclick="alert('Добавление товаров подключим следующим этапом.')">＋ Добавить товар</button></div><div class="tablewrap"><table class="table"><thead><tr><th>Товар</th><th>Категория</th><th>Размер / рост</th><th>Цена</th><th>Наличие</th></tr></thead><tbody><tr><td>Куртка зимняя</td><td>Для девочек</td><td>122–140</td><td>4 500 ₽</td><td>Демо</td></tr><tr><td>Комбинезон</td><td>Для мальчиков</td><td>110–128</td><td>6 900 ₽</td><td>Демо</td></tr><tr><td>Комплект демисезонный</td><td>Унисекс</td><td>116–134</td><td>3 800 ₽</td><td>Демо</td></tr></tbody></table></div><div class="notice">Заменим примеры твоими товарами, фотографиями, реальными ценами и остатками.</div></div></section>
 <section class="section" id="clients"><div class="panel"><div class="panelhead"><h2>Клиенты</h2><button class="btn primary" onclick="alert('Форму добавления клиента сделаем следующим этапом.')">＋ Добавить клиента</button></div><div class="tablewrap"><table class="table"><thead><tr><th>Имя</th><th>Контакт</th><th>Последнее обращение</th><th>Заметка</th></tr></thead><tbody><tr><td>Мария К.</td><td>ВКонтакте</td><td>Сегодня</td><td>Подбор куртки, рост 128</td></tr><tr><td>Екатерина С.</td><td>Авито</td><td>Сегодня</td><td>Интересуется примеркой</td></tr><tr><td>Ольга П.</td><td>Telegram</td><td>Вчера</td><td>Уточняет доставку</td></tr></tbody></table></div><div class="notice">Контакты вымышлены для демонстрации. Реальную базу подключим отдельно.</div></div></section>
 <section class="section" id="assistant"><div class="panel"><div class="panelhead"><h2>ИИ-продавец Фугу</h2><span class="pill orange">Не подключён</span></div><p>Помощник сможет отвечать на типовые вопросы о размерах, ценах, доставке и примерке, используя только подтверждённую информацию магазина.</p><div class="notice">Перед автоматической отправкой подключим базу знаний и правила эскалации. Если ИИ не уверен, он не будет придумывать ответ, а передаст диалог тебе.</div><h3 style="font-size:14px;margin-top:22px">Пример правила</h3><div class="rowitem"><div class="channel">✧</div><div class="rowmain"><b>Вопрос о примерке</b><small>Сообщить, что примерка возможна на складе в Санкт-Петербурге, затем уточнить удобное время.</small></div><span class="pill">Черновик</span></div><div class="rowitem"><div class="channel">!</div><div class="rowmain"><b>Нет точных данных о наличии</b><small>Не обещать наличие. Передать вопрос менеджеру.</small></div><span class="pill">Правило</span></div></div></section>
+
+<section class="section" id="contacts">
+ <div class="panel">
+  <div class="panelhead"><h2>Контакты магазина</h2><span class="pill">Официальные площадки</span></div>
+  <p class="muted">Покупатели могут перейти на удобную площадку, чтобы посмотреть товары или связаться с магазином.</p>
+  <div class="rowitem"><div class="channel">ВК</div><div class="rowmain"><b>Сообщество Фугу ВКонтакте</b><small>Новости, товары и сообщения магазину</small></div><a class="btn primary" href="https://vk.ru/club243261935" target="_blank" rel="noopener noreferrer">Открыть</a></div>
+  <div class="rowitem"><div class="channel">ТГ</div><div class="rowmain"><b>Группа Фугу в Telegram</b><small>Перейти в Telegram-сообщество</small></div><a class="btn primary" href="https://t.me/+e5XV9mrn50xkMmEy" target="_blank" rel="noopener noreferrer">Открыть</a></div>
+  <div class="rowitem"><div class="channel">А</div><div class="rowmain"><b>Магазин Фугу на Авито</b><small>Посмотреть объявления и товары</small></div><a class="btn primary" href="https://www.avito.ru/brands/i178671236" target="_blank" rel="noopener noreferrer">Открыть</a></div>
+  <div class="notice">Ссылки ведут на внешние страницы магазина. Получение сообщений из этих сервисов в CRM пока не подключено.</div>
+ </div>
+</section>
 </main></div>
 <script>
-const titles={home:'Добрый вечер 👋',dialogs:'Обращения',orders:'Заказы',products:'Каталог товаров',clients:'Клиенты',assistant:'ИИ-продавец'};
+const titles={home:'Добрый вечер 👋',dialogs:'Обращения',orders:'Заказы',products:'Каталог товаров',clients:'Клиенты',assistant:'ИИ-продавец',contacts:'Контакты'};
 function go(page){document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===page));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));document.getElementById('pageTitle').textContent=titles[page]||'Фугу CRM';}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
