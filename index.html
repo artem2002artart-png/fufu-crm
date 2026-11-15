@@ -22,6 +22,7 @@
   <button data-page="products"><span class="ico">▧</span>Каталог</button>
   <button data-page="clients"><span class="ico">♙</span>Клиенты</button>
   <button data-page="assistant"><span class="ico">✧</span>ИИ-продавец</button>
+  <button data-page="requests"><span class="ico">☷</span>Заявки</button>
   <button data-page="contacts"><span class="ico">↗</span>Контакты</button>
  </nav>
  <div class="sidefoot">Демо-версия · данные тестовые<br>Фугу CRM v0.1</div>
@@ -54,6 +55,21 @@
 <section class="section" id="clients"><div class="panel"><div class="panelhead"><h2>Клиенты</h2><button class="btn primary" onclick="alert('Форму добавления клиента сделаем следующим этапом.')">＋ Добавить клиента</button></div><div class="tablewrap"><table class="table"><thead><tr><th>Имя</th><th>Контакт</th><th>Последнее обращение</th><th>Заметка</th></tr></thead><tbody><tr><td>Мария К.</td><td>ВКонтакте</td><td>Сегодня</td><td>Подбор куртки, рост 128</td></tr><tr><td>Екатерина С.</td><td>Авито</td><td>Сегодня</td><td>Интересуется примеркой</td></tr><tr><td>Ольга П.</td><td>Telegram</td><td>Вчера</td><td>Уточняет доставку</td></tr></tbody></table></div><div class="notice">Контакты вымышлены для демонстрации. Реальную базу подключим отдельно.</div></div></section>
 <section class="section" id="assistant"><div class="panel"><div class="panelhead"><h2>ИИ-продавец Фугу</h2><span class="pill orange">Не подключён</span></div><p>Помощник сможет отвечать на типовые вопросы о размерах, ценах, доставке и примерке, используя только подтверждённую информацию магазина.</p><div class="notice">Перед автоматической отправкой подключим базу знаний и правила эскалации. Если ИИ не уверен, он не будет придумывать ответ, а передаст диалог тебе.</div><h3 style="font-size:14px;margin-top:22px">Пример правила</h3><div class="rowitem"><div class="channel">✧</div><div class="rowmain"><b>Вопрос о примерке</b><small>Сообщить, что примерка возможна на складе в Санкт-Петербурге, затем уточнить удобное время.</small></div><span class="pill">Черновик</span></div><div class="rowitem"><div class="channel">!</div><div class="rowmain"><b>Нет точных данных о наличии</b><small>Не обещать наличие. Передать вопрос менеджеру.</small></div><span class="pill">Правило</span></div></div></section>
 
+
+<section class="section" id="requests">
+ <div class="panel">
+  <div class="panelhead"><h2>Заявки покупателей</h2><span class="pill" id="requestCount">0 заявок</span></div>
+  <form id="requestForm" class="toolbar" style="flex-wrap:wrap;align-items:stretch">
+   <input class="search" id="requestName" placeholder="Имя покупателя" required>
+   <select class="search" id="requestSource"><option value="ВКонтакте">ВКонтакте</option><option value="Telegram">Telegram</option><option value="Авито">Авито</option><option value="Телефон">Телефон</option><option value="Другое">Другое</option></select>
+   <input class="search" id="requestComment" placeholder="Вопрос / что нужно покупателю" required style="flex:1">
+   <button class="btn primary" type="submit">＋ Добавить заявку</button>
+  </form>
+  <div class="tablewrap"><table class="table" style="min-width:650px"><thead><tr><th>Дата</th><th>Покупатель</th><th>Источник</th><th>Комментарий</th><th>Статус</th><th></th></tr></thead><tbody id="requestRows"><tr><td colspan="6" class="muted">Пока заявок нет. Добавь первую через форму выше.</td></tr></tbody></table></div>
+  <div class="notice">Заявки сохраняются в локальном хранилище этого браузера на этом устройстве. Это не общая база: для доступа с разных устройств и автоматического получения сообщений позже подключим облачную базу и API.</div>
+ </div>
+</section>
+
 <section class="section" id="contacts">
  <div class="panel">
   <div class="panelhead"><h2>Контакты магазина</h2><span class="pill">Официальные площадки</span></div>
@@ -66,9 +82,32 @@
 </section>
 </main></div>
 <script>
-const titles={home:'Добрый вечер 👋',dialogs:'Обращения',orders:'Заказы',products:'Каталог товаров',clients:'Клиенты',assistant:'ИИ-продавец',contacts:'Контакты'};
+const titles={home:'Добрый вечер 👋',dialogs:'Обращения',orders:'Заказы',products:'Каталог товаров',clients:'Клиенты',assistant:'ИИ-продавец',requests:'Заявки',contacts:'Контакты'};
 function go(page){document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===page));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));document.getElementById('pageTitle').textContent=titles[page]||'Фугу CRM';}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+
+const requestStorageKey='fugu-crm-requests-v1';
+function readRequests(){try{return JSON.parse(localStorage.getItem(requestStorageKey)||'[]')}catch(e){return []}}
+function saveRequests(items){localStorage.setItem(requestStorageKey,JSON.stringify(items))}
+function renderRequests(){
+ const items=readRequests(), body=document.getElementById('requestRows'), count=document.getElementById('requestCount');
+ if(!body||!count)return;
+ count.textContent=items.length+' заявок';
+ if(!items.length){body.innerHTML='<tr><td colspan="6" class="muted">Пока заявок нет. Добавь первую через форму выше.</td></tr>';return}
+ body.innerHTML=items.map((item,i)=>'<tr><td>'+new Date(item.date).toLocaleString('ru-RU')+'</td><td>'+escapeText(item.name)+'</td><td>'+escapeText(item.source)+'</td><td>'+escapeText(item.comment)+'</td><td><select class="search" aria-label="Статус заявки" onchange="changeRequestStatus('+i+',this.value)">'+['Новая','В работе','Готово','Отменено'].map(st=>'<option '+(item.status===st?'selected':'')+'>'+st+'</option>').join('')+'</select></td><td><button class="btn" onclick="deleteRequest('+i+')">Удалить</button></td></tr>').join('');
+}
+function escapeText(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function changeRequestStatus(index,status){const items=readRequests();if(items[index]){items[index].status=status;saveRequests(items);renderRequests()}}
+function deleteRequest(index){const items=readRequests();items.splice(index,1);saveRequests(items);renderRequests()}
+document.getElementById('requestForm')?.addEventListener('submit',event=>{
+ event.preventDefault();
+ const name=document.getElementById('requestName').value.trim(),source=document.getElementById('requestSource').value,comment=document.getElementById('requestComment').value.trim();
+ if(!name||!comment)return;
+ const items=readRequests();items.unshift({name,source,comment,status:'Новая',date:new Date().toISOString()});saveRequests(items);
+ event.target.reset();renderRequests();
+});
+renderRequests();
+
 </script>
 </body></html>
