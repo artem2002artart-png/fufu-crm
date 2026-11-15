@@ -111,7 +111,15 @@ body:not(.authenticated) .app{display:none}body.authenticated #authGate{display:
   <div class="notice">Ссылки ведут на внешние страницы магазина. Получение сообщений из этих сервисов в CRM пока не подключено.</div>
  </div>
 </section>
-<div class="modal-backdrop" id="customerModal" role="dialog" aria-modal="true" aria-labelledby="customerModalTitle"><div class="modal"><div class="modal-head"><h2 id="customerModalTitle">Карточка клиента</h2><button class="btn" id="closeCustomerModal" type="button">Закрыть</button></div><input type="hidden" id="customerId"><div class="profile-grid"><div><label for="customerFullName">Имя клиента</label><input id="customerFullName" placeholder="Имя и фамилия"></div><div><label for="customerPhone">Телефон</label><input id="customerPhone" placeholder="+7…"></div><div><label for="customerEmail">Электронная почта</label><input id="customerEmail" placeholder="email@example.com"></div><div><label for="customerSource">Источник</label><input id="customerSource" disabled></div><div style="grid-column:1/-1"><label for="customerNotes">Заметки о клиенте</label><textarea id="customerNotes" placeholder="Размер, предпочтения, договорённости…"></textarea></div></div><div class="actions" style="margin-top:14px"><button class="btn primary" id="saveCustomerBtn" type="button">Сохранить карточку</button></div><div class="panelhead" style="margin-top:24px"><h2>История переписки</h2><span class="muted" id="customerMessageCount"></span></div><div class="message-list" id="customerMessages"><div class="muted">Сообщений пока нет.</div></div></div></div>
+<div class="modal-backdrop" id="customerModal" role="dialog" aria-modal="true" aria-labelledby="customerModalTitle"><div class="modal"><div class="modal-head"><h2 id="customerModalTitle">Карточка клиента</h2><button class="btn" id="closeCustomerModal" type="button">Закрыть</button></div><input type="hidden" id="customerId"><div class="profile-grid"><div><label for="customerFullName">Имя клиента</label><input id="customerFullName" placeholder="Имя и фамилия"></div><div><label for="customerPhone">Телефон</label><input id="customerPhone" placeholder="+7…"></div><div><label for="customerEmail">Электронная почта</label><input id="customerEmail" placeholder="email@example.com"></div><div><label for="customerSource">Источник</label><input id="customerSource" disabled></div><div style="grid-column:1/-1"><label for="customerNotes">Заметки о клиенте</label><textarea id="customerNotes" placeholder="Размер, предпочтения, договорённости…"></textarea></div></div><div class="actions" style="margin-top:14px"><button class="btn primary" id="saveCustomerBtn" type="button">Сохранить карточку</button></div><div class="panelhead" style="margin-top:24px"><h2>История переписки</h2><span class="muted" id="customerMessageCount"></span></div><div class="message-list" id="customerMessages"><div class="muted">Сообщений пока нет.</div></div>
+<div class="reply-box" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
+ <label for="vkReplyText" style="display:block;color:var(--muted);font-size:11px;margin-bottom:6px">Ответить покупателю в ВКонтакте</label>
+ <textarea id="vkReplyText" rows="3" maxlength="4000" placeholder="Напишите сообщение…" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font:inherit;resize:vertical"></textarea>
+ <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;flex-wrap:wrap">
+  <span class="muted" id="vkReplyStatus">Сообщение отправится от имени сообщества «Фугу»</span>
+  <button class="btn primary" id="sendVkReplyBtn" type="button">Отправить в ВК</button>
+ </div>
+</div></div></div>
 </main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -144,6 +152,7 @@ function renderRequests(){
 }
 
 let cloudCustomers=[];
+let activeCustomer=null;
 function renderCustomers(){
  const body=document.getElementById('customersRows');if(!body)return;
  const term=(document.getElementById('customerSearch')?.value||'').trim().toLowerCase();
@@ -158,6 +167,13 @@ async function refreshCustomers(){
 }
 async function openCustomer(id){
  const c=cloudCustomers.find(x=>x.id===id);if(!c)return;
+ activeCustomer=c;
+ document.getElementById('vkReplyText').value='';
+ const sendBtn=document.getElementById('sendVkReplyBtn');
+ const replyStatus=document.getElementById('vkReplyStatus');
+ sendBtn.disabled=!c.vk_peer_id;
+ sendBtn.style.opacity=c.vk_peer_id?'1':'.5';
+ replyStatus.textContent=c.vk_peer_id?'Сообщение отправится от имени сообщества «Фугу»':'У этого клиента нет VK peer ID — ответить из CRM нельзя.';
  document.getElementById('customerId').value=c.id;
  document.getElementById('customerFullName').value=c.full_name||'';
  document.getElementById('customerPhone').value=c.phone||'';
@@ -191,6 +207,29 @@ document.getElementById('customerSearch')?.addEventListener('input',renderCustom
 document.getElementById('closeCustomerModal')?.addEventListener('click',()=>document.getElementById('customerModal').classList.remove('open'));
 document.getElementById('customerModal')?.addEventListener('click',e=>{if(e.target.id==='customerModal')e.currentTarget.classList.remove('open')});
 document.getElementById('saveCustomerBtn')?.addEventListener('click',saveCustomer);
+document.getElementById('sendVkReplyBtn')?.addEventListener('click',sendVkReply);
+async function sendVkReply(){
+ const text=document.getElementById('vkReplyText').value.trim();
+ const status=document.getElementById('vkReplyStatus');
+ const button=document.getElementById('sendVkReplyBtn');
+ if(!activeCustomer||!activeCustomer.vk_peer_id){status.textContent='У клиента нет адреса диалога ВКонтакте.';return;}
+ if(!text){status.textContent='Сначала напишите текст сообщения.';return;}
+ if(!currentUser){status.textContent='Войдите в CRM заново.';return;}
+ button.disabled=true;status.textContent='Отправляю сообщение…';
+ try{
+  const {data,error}=await supabaseClient.functions.invoke('vk-send',{body:{customer_id:activeCustomer.id,message:text}});
+  if(error)throw error;
+  if(data?.error)throw new Error(data.error);
+  document.getElementById('vkReplyText').value='';
+  status.textContent='Сообщение отправлено.';
+  await openCustomer(activeCustomer.id);
+  document.getElementById('vkReplyStatus').textContent='Сообщение отправлено.';
+ }catch(error){
+  status.textContent='Не отправлено: '+(error.message||'ошибка');
+ }finally{
+  button.disabled=!activeCustomer?.vk_peer_id;
+ }
+}
 
 async function refreshCloudRequests(){
  if(!currentUser)return;
