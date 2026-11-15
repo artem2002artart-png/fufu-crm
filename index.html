@@ -152,7 +152,7 @@ async function migrateLocalRequests(){
  for(const item of localItems){
   const date=item.date||item.created_at||new Date().toISOString();
   const time=new Date(date).getTime();
-  const duplicate=(existing||[]).some(row=>row.customer_name===item.name&&row.source===item.source&&row.comment===item.comment&&row.status===(item.status||'Новая')&&Math.abs(new Date(row.created_at).getTime()-time)<1000);
+  const duplicate=Boolean(item.id)||(existing||[]).some(row=>row.customer_name===item.name&&row.source===item.source&&row.comment===item.comment&&Math.abs(new Date(row.created_at).getTime()-time)<1000);
   if(!duplicate)toInsert.push({owner_id:currentUser.id,customer_name:String(item.name||'Без имени'),source:String(item.source||'Другое'),comment:String(item.comment||''),status:String(item.status||'Новая'),created_at:date});
  }
  if(toInsert.length){
