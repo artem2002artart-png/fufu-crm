@@ -13,6 +13,11 @@
 .auth-card input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff}
 .auth-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.auth-message{min-height:20px;color:var(--green);font-size:12px;margin-top:14px}
 body:not(.authenticated) .app{display:none}body.authenticated #authGate{display:none}
+.modal-backdrop{position:fixed;inset:0;background:#17191466;z-index:20;display:none;align-items:center;justify-content:center;padding:18px}
+.modal-backdrop.open{display:flex}.modal{background:#fff;width:min(100%,760px);max-height:90vh;overflow:auto;border-radius:18px;padding:22px;box-shadow:0 20px 70px #0002}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.modal-head h2{margin:0;font-size:19px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.profile-grid label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.profile-grid input,.profile-grid textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px;font:inherit}.profile-grid textarea{min-height:70px;resize:vertical}.message-list{margin-top:16px;border-top:1px solid var(--line)}.message{padding:12px 0;border-bottom:1px solid var(--line)}.message small{color:var(--muted);display:block;margin-bottom:5px}.message p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.client-open{background:transparent;color:var(--green);font-weight:700;padding:5px 0;text-align:left}
+@media(max-width:600px){.modal{padding:16px}.profile-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.auth-card{padding:22px}}
 @media(max-width:900px){.app{grid-template-columns:1fr}.side{padding:12px 14px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:2px 5px 12px}.nav{display:flex;overflow:auto;gap:4px}.navlabel,.sidefoot{display:none}.nav button{width:auto;white-space:nowrap;padding:9px}.nav button .ico{display:none}main{padding:22px 16px}.grid{grid-template-columns:repeat(2,1fr)}.content{grid-template-columns:1fr}.top{align-items:flex-start}.user .who{display:none}}
 @media(max-width:480px){.top h1{font-size:23px}.actions .btn:first-child{display:none}.grid{gap:9px}.stat{padding:14px}.stat strong{font-size:23px}.panel{padding:15px}}
@@ -78,7 +83,7 @@ body:not(.authenticated) .app{display:none}body.authenticated #authGate{display:
 <div class="rowitem"><div class="channel">ВК</div><div class="rowmain"><b>Мария К.</b><small>Есть куртка на рост 128?</small></div><span class="pill orange">Новый</span></div><div class="rowitem"><div class="channel">А</div><div class="rowmain"><b>Екатерина С.</b><small>Можно ли приехать на примерку?</small></div><span class="pill">В работе</span></div><div class="rowitem"><div class="channel">ТГ</div><div class="rowmain"><b>Ольга П.</b><small>Сколько стоит доставка?</small></div><span class="pill red">Нужен ответ</span></div><div class="notice">Это макет единого окна. Для получения настоящих диалогов нужны API-доступы каждой площадки.</div></div></section>
 <section class="section" id="orders"><div class="panel"><div class="panelhead"><h2>Заказы</h2><button class="btn primary" onclick="alert('Форма заказа появится в следующей версии.')">＋ Новый заказ</button></div><div class="tablewrap"><table class="table"><thead><tr><th>№</th><th>Покупатель</th><th>Состав</th><th>Сумма</th><th>Статус</th></tr></thead><tbody><tr><td>#1001</td><td>Мария К.</td><td>Куртка, рост 128</td><td>4 500 ₽</td><td><span class="pill orange">Новый</span></td></tr><tr><td>#1002</td><td>Екатерина С.</td><td>Зимний комбинезон</td><td>6 900 ₽</td><td><span class="pill">Примерка</span></td></tr><tr><td>#1003</td><td>Ольга П.</td><td>Комплект демисезонный</td><td>3 800 ₽</td><td><span class="pill red">Доставка</span></td></tr></tbody></table></div><div class="notice">Заказы приведены для демонстрации структуры, это не реальные продажи.</div></div></section>
 <section class="section" id="products"><div class="panel"><div class="panelhead"><h2>Каталог товаров</h2><button class="btn primary" onclick="alert('Добавление товаров подключим следующим этапом.')">＋ Добавить товар</button></div><div class="tablewrap"><table class="table"><thead><tr><th>Товар</th><th>Категория</th><th>Размер / рост</th><th>Цена</th><th>Наличие</th></tr></thead><tbody><tr><td>Куртка зимняя</td><td>Для девочек</td><td>122–140</td><td>4 500 ₽</td><td>Демо</td></tr><tr><td>Комбинезон</td><td>Для мальчиков</td><td>110–128</td><td>6 900 ₽</td><td>Демо</td></tr><tr><td>Комплект демисезонный</td><td>Унисекс</td><td>116–134</td><td>3 800 ₽</td><td>Демо</td></tr></tbody></table></div><div class="notice">Заменим примеры твоими товарами, фотографиями, реальными ценами и остатками.</div></div></section>
-<section class="section" id="clients"><div class="panel"><div class="panelhead"><h2>Клиенты</h2><button class="btn primary" onclick="alert('Форму добавления клиента сделаем следующим этапом.')">＋ Добавить клиента</button></div><div class="tablewrap"><table class="table"><thead><tr><th>Имя</th><th>Контакт</th><th>Последнее обращение</th><th>Заметка</th></tr></thead><tbody><tr><td>Мария К.</td><td>ВКонтакте</td><td>Сегодня</td><td>Подбор куртки, рост 128</td></tr><tr><td>Екатерина С.</td><td>Авито</td><td>Сегодня</td><td>Интересуется примеркой</td></tr><tr><td>Ольга П.</td><td>Telegram</td><td>Вчера</td><td>Уточняет доставку</td></tr></tbody></table></div><div class="notice">Контакты вымышлены для демонстрации. Реальную базу подключим отдельно.</div></div></section>
+<section class="section" id="clients"><div class="panel"><div class="panelhead"><h2>Клиенты</h2><button class="btn primary" id="addCustomerBtn" type="button">＋ Добавить клиента</button></div><div class="toolbar"><input class="search" id="customerSearch" placeholder="Поиск по имени, телефону или VK ID"></div><div class="tablewrap"><table class="table"><thead><tr><th>Имя</th><th>Источник</th><th>Телефон / VK ID</th><th>Последнее обращение</th><th></th></tr></thead><tbody id="customersRows"><tr><td colspan="5" class="muted">Загрузка клиентов…</td></tr></tbody></table></div><div class="notice">Клиенты из ВКонтакте создаются автоматически при первом сообщении. Повторные сообщения попадают в историю того же клиента.</div></div></section>
 <section class="section" id="assistant"><div class="panel"><div class="panelhead"><h2>ИИ-продавец Фугу</h2><span class="pill orange">Не подключён</span></div><p>Помощник сможет отвечать на типовые вопросы о размерах, ценах, доставке и примерке, используя только подтверждённую информацию магазина.</p><div class="notice">Перед автоматической отправкой подключим базу знаний и правила эскалации. Если ИИ не уверен, он не будет придумывать ответ, а передаст диалог тебе.</div><h3 style="font-size:14px;margin-top:22px">Пример правила</h3><div class="rowitem"><div class="channel">✧</div><div class="rowmain"><b>Вопрос о примерке</b><small>Сообщить, что примерка возможна на складе в Санкт-Петербурге, затем уточнить удобное время.</small></div><span class="pill">Черновик</span></div><div class="rowitem"><div class="channel">!</div><div class="rowmain"><b>Нет точных данных о наличии</b><small>Не обещать наличие. Передать вопрос менеджеру.</small></div><span class="pill">Правило</span></div></div></section>
 
 
@@ -106,12 +111,14 @@ body:not(.authenticated) .app{display:none}body.authenticated #authGate{display:
   <div class="notice">Ссылки ведут на внешние страницы магазина. Получение сообщений из этих сервисов в CRM пока не подключено.</div>
  </div>
 </section>
+<div class="modal-backdrop" id="customerModal" role="dialog" aria-modal="true" aria-labelledby="customerModalTitle"><div class="modal"><div class="modal-head"><h2 id="customerModalTitle">Карточка клиента</h2><button class="btn" id="closeCustomerModal" type="button">Закрыть</button></div><input type="hidden" id="customerId"><div class="profile-grid"><div><label for="customerFullName">Имя клиента</label><input id="customerFullName" placeholder="Имя и фамилия"></div><div><label for="customerPhone">Телефон</label><input id="customerPhone" placeholder="+7…"></div><div><label for="customerEmail">Электронная почта</label><input id="customerEmail" placeholder="email@example.com"></div><div><label for="customerSource">Источник</label><input id="customerSource" disabled></div><div style="grid-column:1/-1"><label for="customerNotes">Заметки о клиенте</label><textarea id="customerNotes" placeholder="Размер, предпочтения, договорённости…"></textarea></div></div><div class="actions" style="margin-top:14px"><button class="btn primary" id="saveCustomerBtn" type="button">Сохранить карточку</button></div><div class="panelhead" style="margin-top:24px"><h2>История переписки</h2><span class="muted" id="customerMessageCount"></span></div><div class="message-list" id="customerMessages"><div class="muted">Сообщений пока нет.</div></div></div></div>
 </main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const titles={home:'Добрый вечер 👋',dialogs:'Обращения',orders:'Заказы',products:'Каталог товаров',clients:'Клиенты',assistant:'ИИ-продавец',requests:'Заявки',contacts:'Контакты'};
 function go(page){document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===page));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));document.getElementById('pageTitle').textContent=titles[page]||'Фугу CRM';}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+document.querySelector('[data-page="clients"]')?.addEventListener('click',()=>refreshCustomers().catch(e=>alert('Ошибка загрузки клиентов: '+e.message)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
 
 const SUPABASE_URL='https://nyyjcbwtgyyqjvzwbxkw.supabase.co';
@@ -135,6 +142,56 @@ function renderRequests(){
  if(!items.length){body.innerHTML='<tr><td colspan="6" class="muted">Пока заявок нет. Добавь первую через форму выше.</td></tr>';return}
  body.innerHTML=items.map((item,i)=>'<tr><td>'+new Date(item.created_at).toLocaleString('ru-RU')+'</td><td>'+escapeText(item.customer_name)+'</td><td>'+escapeText(item.source)+'</td><td>'+escapeText(item.comment)+'</td><td><select class="search" aria-label="Статус заявки" onchange="changeRequestStatus('+i+',this.value)">'+['Новая','В работе','Готово','Отменено'].map(st=>'<option '+(item.status===st?'selected':'')+'>'+st+'</option>').join('')+'</select></td><td><button class="btn" onclick="deleteRequest('+i+')">Удалить</button></td></tr>').join('');
 }
+
+let cloudCustomers=[];
+function renderCustomers(){
+ const body=document.getElementById('customersRows');if(!body)return;
+ const term=(document.getElementById('customerSearch')?.value||'').trim().toLowerCase();
+ const rows=cloudCustomers.filter(c=>[c.full_name,c.phone,c.email,c.vk_user_id,c.source].some(v=>String(v||'').toLowerCase().includes(term)));
+ if(!rows.length){body.innerHTML='<tr><td colspan="5" class="muted">Клиенты пока не найдены. Они появятся автоматически после сообщения из ВК или их можно добавить вручную.</td></tr>';return;}
+ body.innerHTML=rows.map(c=>'<tr><td><button class="client-open" type="button" onclick="openCustomer(\''+c.id+'\')">'+escapeText(c.full_name)+'</button></td><td>'+escapeText(c.source||'—')+'</td><td>'+escapeText(c.phone|| (c.vk_user_id?'VK ID '+c.vk_user_id:'—'))+'</td><td>'+new Date(c.updated_at||c.created_at).toLocaleDateString('ru-RU')+'</td><td><button class="btn" type="button" onclick="openCustomer(\''+c.id+'\')">Открыть</button></td></tr>').join('');
+}
+async function refreshCustomers(){
+ if(!currentUser)return;
+ const {data,error}=await supabaseClient.from('customers').select('id,full_name,source,vk_user_id,vk_peer_id,phone,email,notes,created_at,updated_at').eq('owner_id',currentUser.id).order('updated_at',{ascending:false});
+ if(error)throw error;cloudCustomers=data||[];renderCustomers();
+}
+async function openCustomer(id){
+ const c=cloudCustomers.find(x=>x.id===id);if(!c)return;
+ document.getElementById('customerId').value=c.id;
+ document.getElementById('customerFullName').value=c.full_name||'';
+ document.getElementById('customerPhone').value=c.phone||'';
+ document.getElementById('customerEmail').value=c.email||'';
+ document.getElementById('customerSource').value=c.source||'';
+ document.getElementById('customerNotes').value=c.notes||'';
+ document.getElementById('customerModalTitle').textContent=c.full_name||'Карточка клиента';
+ const list=document.getElementById('customerMessages');list.innerHTML='<div class="muted">Загружаю историю…</div>';
+ document.getElementById('customerModal').classList.add('open');
+ const {data,error}=await supabaseClient.from('customer_messages').select('id,source,direction,message_text,created_at').eq('customer_id',id).eq('owner_id',currentUser.id).order('created_at',{ascending:false});
+ if(error){list.innerHTML='<div class="muted">Не удалось загрузить историю: '+escapeText(error.message)+'</div>';return;}
+ document.getElementById('customerMessageCount').textContent=(data||[]).length+' сообщений';
+ list.innerHTML=(data||[]).length?(data||[]).map(m=>'<div class="message"><small>'+escapeText(m.source)+' · '+(m.direction==='incoming'?'Входящее':'Исходящее')+' · '+new Date(m.created_at).toLocaleString('ru-RU')+'</small><p>'+escapeText(m.message_text)+'</p></div>').join(''):'<div class="muted">Сообщений пока нет. Новые сообщения из ВК будут появляться здесь.</div>';
+}
+async function saveCustomer(){
+ const id=document.getElementById('customerId').value;if(!id||!currentUser)return;
+ const patch={full_name:document.getElementById('customerFullName').value.trim()||'Без имени',phone:document.getElementById('customerPhone').value.trim()||null,email:document.getElementById('customerEmail').value.trim()||null,notes:document.getElementById('customerNotes').value.trim()||null,updated_at:new Date().toISOString()};
+ const {error}=await supabaseClient.from('customers').update(patch).eq('id',id).eq('owner_id',currentUser.id);
+ if(error){alert('Не удалось сохранить клиента: '+error.message);return;}
+ await refreshCustomers();document.getElementById('customerModalTitle').textContent=patch.full_name;alert('Карточка клиента сохранена.');
+}
+async function addCustomer(){
+ if(!currentUser)return;
+ const name=prompt('Имя клиента:');if(!name?.trim())return;
+ const {data,error}=await supabaseClient.from('customers').insert({owner_id:currentUser.id,full_name:name.trim(),source:'Вручную'}).select('id').single();
+ if(error){alert('Не удалось добавить клиента: '+error.message);return;}
+ await refreshCustomers();await openCustomer(data.id);
+}
+document.getElementById('addCustomerBtn')?.addEventListener('click',addCustomer);
+document.getElementById('customerSearch')?.addEventListener('input',renderCustomers);
+document.getElementById('closeCustomerModal')?.addEventListener('click',()=>document.getElementById('customerModal').classList.remove('open'));
+document.getElementById('customerModal')?.addEventListener('click',e=>{if(e.target.id==='customerModal')e.currentTarget.classList.remove('open')});
+document.getElementById('saveCustomerBtn')?.addEventListener('click',saveCustomer);
+
 async function refreshCloudRequests(){
  if(!currentUser)return;
  const {data,error}=await supabaseClient.from('requests').select('id,owner_id,customer_name,source,comment,status,created_at').eq('owner_id',currentUser.id).order('created_at',{ascending:false});
@@ -179,6 +236,7 @@ async function handleSession(session){
  try{
   const migrated=await migrateLocalRequests();
   await refreshCloudRequests();
+  await refreshCustomers();
   if(migrated)setAuthMessage('Перенесено в облако заявок: '+migrated+'. Локальная копия сохранена на этом устройстве.');
  }catch(error){
   loadedUserId=null;
